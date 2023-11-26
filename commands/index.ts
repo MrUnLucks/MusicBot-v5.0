@@ -7,7 +7,7 @@ export type CommandStructure = {
 };
 const commands: Array<CommandStructure> = [];
 const files = readdirSync(join(__dirname, ""));
-
+//Its not currently possible to have a Synchronous import while in CJS, it can be resolved using an experimental top level await(https://stackoverflow.com/questions/51069002/convert-import-to-synchronous)
 for (const file of files) {
   if (file.endsWith(".ts") && file !== "index.ts") {
     await import(`./${file}`).then((module: CommandStructure) => {
