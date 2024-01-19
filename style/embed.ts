@@ -1,4 +1,3 @@
-// at the top of your file
 import { Embed } from "discord.js";
 import { VideoSearchResult } from "yt-search";
 

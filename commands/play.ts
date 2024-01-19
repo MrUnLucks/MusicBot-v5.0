@@ -4,11 +4,11 @@ import { searchEmbed } from "../style/embed";
 
 export const data = new SlashCommandBuilder()
   .setName("play")
-  .setDescription("Search song")
+  .setDescription("Play a song")
   .addStringOption((option) =>
     option
       .setName("song")
-      .setDescription("The input to echo back")
+      .setDescription("Search a song or URL")
       .setRequired(true)
   );
 
@@ -18,7 +18,6 @@ export async function execute(interaction: CommandInteraction) {
     return interaction.reply("This field cannot be empty");
   }
   const searchResult = await songFinder(query);
-  console.log(searchResult);
 
   //better error handling for searhresult error
   return interaction.reply({
