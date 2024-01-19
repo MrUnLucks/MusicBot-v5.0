@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch index.ts",
     "start": "node dist/index.js",
-    "build": "tsup index.ts --minify"
+    "build": "tsup index.ts --minify",
+    "deploy": "tsx deploy-commands.ts"
   },
   "author": "MrUnLucks",
   "license": "ISC",
@@ -16,9 +17,11 @@
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
     "fs": "^0.0.1-security",
-    "sodium-native": "^4.0.4"
+    "sodium-native": "^4.0.4",
+    "yt-search": "^2.10.4"
   },
   "devDependencies": {
+    "@types/yt-search": "^2.10.3",
     "eslint": "^8.54.0",
     "tsup": "^8.0.1",
     "tsx": "^4.4.0",
