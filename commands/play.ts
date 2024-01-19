@@ -1,5 +1,6 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import songFinder from "../utils/songFinder";
+import { searchEmbed } from "../style/embed";
 
 export const data = new SlashCommandBuilder()
   .setName("play")
@@ -16,8 +17,11 @@ export async function execute(interaction: CommandInteraction) {
   if (!query) {
     return interaction.reply("This field cannot be empty");
   }
-  const searchResults = await songFinder(query);
-  console.log(searchResults);
+  const searchResult = await songFinder(query);
+  console.log(searchResult);
 
-  return interaction.reply("Pong!");
+  //better error handling for searhresult error
+  return interaction.reply({
+    embeds: [searchEmbed(searchResult ?? {})],
+  });
 }
