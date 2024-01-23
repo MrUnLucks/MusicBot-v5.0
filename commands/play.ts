@@ -1,5 +1,6 @@
 import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import songFinder from "../utils/songFinder";
+import { video_basic_info, stream } from "play-dl";
 import {
   joinVoiceChannel,
   createAudioPlayer,
@@ -44,7 +45,7 @@ export async function execute(interaction: CommandInteraction) {
     return interaction.reply("You need to be in a voice channel");
   }
   const connection = joinVoiceChannel({
-    channelId: interaction.member.voice.channelId,
+    channelId: voiceChannelId,
     guildId: interaction.guildId,
     adapterCreator: interaction.guild.voiceAdapterCreator,
   });
@@ -57,18 +58,18 @@ export async function execute(interaction: CommandInteraction) {
   //Subscribe to audio player
   const subscription = connection.subscribe(player);
   // Create Audio Resource
-  const resource = createAudioResource(
-    "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    {
-      inputType: StreamType.Arbitrary,
-    }
-  );
-  player.play(resource);
-
   //TODO: better error handling for searchresult error
   const searchResult = await songFinder(query);
-
-  return interaction.reply({
-    embeds: [searchEmbed(searchResult ?? {})],
+  if (!searchResult?.url) {
+    return interaction.reply("No results found");
+  }
+  const source = await stream(searchResult.url, { quality: 0 });
+  const resource = createAudioResource(source.stream, {
+    inputType: source.type,
   });
+  player.play(resource);
+
+  // return interaction.reply({
+  //   embeds: [searchEmbed(searchResult ?? {})],
+  // });
 }
