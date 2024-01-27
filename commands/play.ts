@@ -44,6 +44,7 @@ export async function execute(interaction: CommandInteraction) {
   if (!voiceChannelId) {
     return interaction.reply("You need to be in a voice channel");
   }
+  await interaction.deferReply();
   const connection = joinVoiceChannel({
     channelId: voiceChannelId,
     guildId: interaction.guildId,
@@ -61,15 +62,14 @@ export async function execute(interaction: CommandInteraction) {
   //TODO: better error handling for searchresult error
   const searchResult = await songFinder(query);
   if (!searchResult?.url) {
-    return interaction.reply("No results found");
+    return interaction.editReply("No results found");
   }
+  interaction.editReply({
+    embeds: [searchEmbed(searchResult ?? {})],
+  });
   const source = await stream(searchResult.url, { quality: 0 });
   const resource = createAudioResource(source.stream, {
     inputType: source.type,
   });
   player.play(resource);
-
-  // return interaction.reply({
-  //   embeds: [searchEmbed(searchResult ?? {})],
-  // });
 }
