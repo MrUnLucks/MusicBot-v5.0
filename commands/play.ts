@@ -6,7 +6,8 @@ import {
   createAudioPlayer,
   NoSubscriberBehavior,
   createAudioResource,
-  StreamType,
+  VoiceConnectionStatus,
+  entersState,
 } from "@discordjs/voice";
 import { searchEmbed } from "../style/embed";
 
@@ -72,4 +73,21 @@ export async function execute(interaction: CommandInteraction) {
     inputType: source.type,
   });
   player.play(resource);
+  connection.on(
+    VoiceConnectionStatus.Disconnected,
+    async (oldState, newState) => {
+      try {
+        await Promise.race([
+          entersState(connection, VoiceConnectionStatus.Signalling, 5_000),
+          entersState(connection, VoiceConnectionStatus.Connecting, 5_000),
+        ]);
+        // Seems to be reconnecting to a new channel - ignore disconnect
+      } catch (error) {
+        // Seems to be a real disconnect which SHOULDN'T be recovered from
+        if (!connection.state.status) {
+          connection.destroy();
+        }
+      }
+    }
+  );
 }
